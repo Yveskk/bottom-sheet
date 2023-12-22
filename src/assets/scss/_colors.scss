@@ -1,0 +1,36 @@
+:root {
+  --bs-sys-color-white: #FFFFFF;
+
+  --bs-sys-color-dark : #262626;
+  --bs-sys-color-on-dark : "";
+  --bs-sys-color-dark-container : "";
+  --bs-sys-color-on-dark-container : "";
+
+  --bs-sys-color-light : #f4f4f4;
+  --bs-sys-color-on-light : "";
+  --bs-sys-color-light-container : "";
+  --bs-sys-color-on-light-container : "";
+
+}
+
+
+.light {
+  background: var(--bs-sys-color-light);
+  color: var(--bs-sys-color-on-light);
+}
+
+.light:hover {
+  background: var(--bs-sys-color-light-container);
+  color: var(--bs-sys-color-on-light-container);
+}
+
+.dark {
+  background: var(--bs-sys-color-dark);
+  color: var(--bs-sys-color-on-dark);
+}
+
+.dark:hover {
+  background: var(--bs-sys-color-dark-container);
+  color: var(--bs-sys-color-on-dark-container);
+}
+
