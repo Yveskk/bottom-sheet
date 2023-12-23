@@ -1,15 +1,20 @@
-@use 'sass:map';
+@use "sass:map";
 
-@use '_colors.scss';
-@use '_bottom-sheet.scss';
-@use '_button.scss';
+@use "_colors.scss";
+@use "_bottom-sheet.scss";
+@use "_button.scss";
 
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
   background: #e3f2fd;
 }
-

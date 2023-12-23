@@ -1,70 +1,151 @@
-# Getting Started with Create React App
+# Introduction
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ce composant est une implémentation d'une feuille inférieure (bottom sheet) en React. Une feuille inférieure est une interface utilisateur qui s'affiche en bas de la page et qui peut être utilisée pour afficher des informations supplémentaires ou des options. Cette implémentation permet également de faire glisser la feuille vers le haut ou vers le bas à l'aide d'une icône de glisser.
 
-## Available Scripts
+# \***\*\*\*\*\*** Fichier BottomSheet.js **\*\***\*\*\***\*\***
 
-In the project directory, you can run:
+# Importations : import React, { useEffect, useState, useRef } from "react";
 
-### `npm start`
+    - J'ai utilise React pour créer des composants et gérer leur état.
+    - useEffect  pour effectuer des opérations après que le rendu du composant est terminé.
+    -  useState  pour créer des variables d'état dans un composant fonctionnel.
+    useRef  pour créer une référence à un élément du DOM.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Composant BottomSheet : const BottomSheet = ({ open, setOpen,children }) => { ......}
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Le composant BottomSheet est une fonction qui prend trois propriétés : open (pour déterminer si la feuille est ouverte), setOpen (pour mettre à jour l'état d'ouverture de la feuille), et children (pour rendre le contenu dynamique à l'intérieur de la feuille).
 
-### `npm test`
+# Déclaration des variables d'état :
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+"
+const [isDragging, setIsDragging] = useState(false);
+const [startY, setStartY] = useState(0);
+const [startHeight, setStartHeight] = useState(0);
+"
+J'ai utlisé :
 
-### `npm run build`
+- isDragging indique si l'utilisateur est en train de redimensionner la fenêtre modale.
+- startY stocke la position Y de la souris au début du redimensionnement.
+- startHeight stocke la hauteur initiale de la fenêtre modale au début du redimensionnement.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Création d'une référence au contenu de la feuille :
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    " const sheetContentRef = useRef(null);
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    sheetContentRef est une référence au contenu de la feuille inférieure. Elle est utilisée pour accéder à l'élément DOM correspondant.
 
-### `npm run eject`
+# Gestion des événements de souris :
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+"
+const handleMouseDown = (e) => {
+setIsDragging(true);
+setStartY(e.pageY);
+setStartHeight(parseInt(sheetContentRef.current.style.height) || 0);
+};
+"
+handleMouseDown est appelée lorsque l'utilisateur commence à redimensionner la fenêtre modale. Elle enregistre la position Y de la souris et la hauteur actuelle de la fenêtre
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Effets secondaires avec useEffect : useEffect(() => {
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+....
+}, [isDragging, startHeight, startY, setOpen]);
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+useEffect est utilisé pour ajouter des écouteurs d'événements de souris pendant le redimensionnement de la fenêtre modale.
 
-## Learn More
+# Gestion du mouvement de la souris :
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+"
+const handleMouseMove = (e) => {
+if (isDragging) {
+const delta = startY - e.pageY;
+const newHeight = startHeight + (delta / window.innerHeight) \* 100;
+sheetContent.style.height = `${newHeight}vh`;
+}
+};
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+"
+handleMouseMove est appelée pendant le redimensionnement. Elle calcule la nouvelle hauteur de la fenêtre en fonction du mouvement vertical de la souris.
 
-### Code Splitting
+# Gestion de la fin du redimensionnement :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+"
+const handleMouseUp = () => {
+setIsDragging(false);
+const sheetHeight = parseInt(sheetContent.style.height) || 0;
 
-### Analyzing the Bundle Size
+if (sheetHeight < 25) {
+setOpen(false);
+}
+if (sheetHeight > 75) {
+sheetContent.style.height = "100vh";
+} else {
+sheetContent.style.height = "50vh";
+}
+};
+"
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+handleMouseUp est appelée lorsque l'utilisateur arrête de redimensionner. Elle ajuste la hauteur finale de la fenêtre en fonction des conditions spécifiées.
 
-### Making a Progressive Web App
+# Nettoyage des écouteurs d'événements :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+"
+return () => {
+document.removeEventListener("mousemove", handleMouseMove);
+document.removeEventListener("mouseup", handleMouseUp);
+};
 
-### Advanced Configuration
+"
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Le bloc return de useEffect est utilisé pour supprimer les écouteurs d'événements lorsque le composant est démonté.
 
-### Deployment
+# Rendu du composant :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+"
+return (
 
-### `npm run build` fails to minify
+  <div className={`bottom-sheet ${open && "show"}`}>
+    {/* ... */}
+  </div>
+);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+"
+Le composant est rendu avec une classe conditionnelle basée sur la propriété open. Cela permet de montrer ou de masquer la feuille inférieure.
+
+# Contenu de la feuille :
+
+"
+
+<div className="sheet-overlay" onClick={() => setOpen(false)}></div>
+<div className="content">
+  {/* ... */}
+</div>
+
+"
+Le contenu de la feuille inclut une superposition (overlay) qui, lorsqu'elle est cliquée, ferme la feuille. La section "content" contient l'en-tête avec l'icône de glisser et le corps avec le contenu dynamique (children).
+
+# \***\*\*\*\*\***\*\***\*\*\*\*\*** Fichier App.js **\*\***\*\***\*\***
+
+# État de la feuille (open) : const [open, setOpen] = useState(false);
+
+Le hook useState est utilisé pour définir l'état initial de la feuille comme fermée (false). La variable open contient l'état actuel de la feuille, et setOpen est une fonction pour mettre à jour cet état.
+
+# Utilisation du composant BottomSheet : <BottomSheet open={open} setOpen={setOpen} title={"Bottom Sheet"}>
+
+{/_ ... _/}
+</BottomSheet>
+
+Le composant BottomSheet est utilisé avec les propriétés open, setOpen, et title. La propriété open détermine si la feuille est ouverte, setOpen permet de mettre à jour cet état, et title est passé comme une propriété, bien que le composant BottomSheet n'ait pas actuellement de prop nommée title.
+
+# \***\*\*\*\*\*\*\*** Dossier scss et Fichier Index.js \*\*\***\*\*\*\***
+
+J'ai utilisé un style scss pour personnaliser l'apparence des composants. ce dernier a été importé au niveau du fichier racine Index.js
+
+# Commandes d'éxécution du code une fois cloné
+
+    - npm install , yarn add or pnpm install   (Pour installer les packages)
+
+    - npm start , yarn start or pnpm start (Pour demarrer le projet)
+
+# visualisation du rendu
+
+Une fois démarré le projet, aller dans un navigatueur et entrer l'URl : http://localhost:3000

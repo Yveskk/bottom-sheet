@@ -1,18 +1,10 @@
 :root {
-  --bs-sys-color-white: #FFFFFF;
+  --bs-sys-color-white: #ffffff;
 
-  --bs-sys-color-dark : #262626;
-  --bs-sys-color-on-dark : "";
-  --bs-sys-color-dark-container : "";
-  --bs-sys-color-on-dark-container : "";
+  --bs-sys-color-dark: #262626;
 
-  --bs-sys-color-light : #f4f4f4;
-  --bs-sys-color-on-light : "";
-  --bs-sys-color-light-container : "";
-  --bs-sys-color-on-light-container : "";
-
+  --bs-sys-color-light: #f4f4f4;
 }
-
 
 .light {
   background: var(--bs-sys-color-light);
@@ -33,4 +25,3 @@
   background: var(--bs-sys-color-dark-container);
   color: var(--bs-sys-color-on-dark-container);
 }
-

@@ -1,7 +1,7 @@
-$width : 100%;
-$height : 100%;
+$width: 100%;
+$height: 100%;
 
-.bottom-sheet{
+.bottom-sheet {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,18 +15,16 @@ $height : 100%;
   align-items: center;
   transition: 0.1s linear;
 
-  &.show{
+  &.show {
     opacity: 1;
     pointer-events: auto;
-
   }
 
-  &.show .content{
+  &.show .content {
     transform: translateY(0%);
   }
 
-
-  .sheet-overlay{
+  .sheet-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -34,10 +32,10 @@ $height : 100%;
     width: $width;
     height: $height;
     opacity: 0.2;
-    background : #000;
-  };
+    background: #000;
+  }
 
-  .content{
+  .content {
     background: var(--bs-sys-color-white);
     height: 50vh;
     max-height: 100vh;
@@ -49,34 +47,32 @@ $height : 100%;
     transform: translateY(100%);
     transition: 0.3s ease;
 
-    .header{
+    .header {
       display: flex;
       justify-content: center;
 
-      .drag-icon{
+      .drag-icon {
         cursor: grab;
         user-select: none;
         padding: 15px;
         margin-top: -15px;
-        span{
+        span {
           height: 4px;
           width: 40px;
           display: block;
-          background: #c7d0e1;
-          border-radius: 50px
+          background: #000;
+          border-radius: 50px;
         }
       }
-    };
-    .body{
+    }
+    .body {
       overflow-y: auto;
-      height : $height;
+      height: $height;
       scrollbar-width: none;
       padding: 15px 0 40px;
-      &::-webkit-scrollbar{
-        width : 0
+      &::-webkit-scrollbar {
+        width: 0;
       }
     }
   }
-
-
 }

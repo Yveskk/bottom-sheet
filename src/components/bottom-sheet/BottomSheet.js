@@ -1,56 +1,68 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 
 const BottomSheet = ({ open, setOpen, children }) => {
-    useEffect(() => {
-        const dragIcon = document.querySelector(".drag-icon");
-        const sheetContent = document.querySelector(".content");
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [startHeight, setStartHeight] = useState(0);
+  const sheetContentRef = useRef(null);
 
-        let isDragging = false;
-        let startY = 0;
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartY(e.pageY);
+    setStartHeight(parseInt(sheetContentRef.current.style.height) || 0);
+  };
 
-        const handleMouseDown = (e) => {
-            isDragging = true;
-            startY = e.clientY;
-        };
+  useEffect(() => {
+    const sheetContent = sheetContentRef.current;
 
-        const handleMouseMove = (e) => {
-            if (isDragging) {
-                const newHeight = (e.pageY / window.innerHeight) * 100;
-                sheetContent.style.height = `${newHeight}vh`;
-            }
-        };
+    const handleMouseMove = (e) => {
+      if (isDragging) {
+        const delta = startY - e.pageY;
+        const newHeight = startHeight + (delta / window.innerHeight) * 100;
+        sheetContent.style.height = `${newHeight}vh`;
+      }
+    };
 
-        const handleMouseUp = () => {
-            isDragging = false;
-        };
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      const sheetHeight = parseInt(sheetContent.style.height) || 0;
 
-        dragIcon.addEventListener('mousedown', handleMouseDown);
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+      if (sheetHeight < 25) {
+        setOpen(false);
+      }
 
-        return () => {
-            dragIcon.removeEventListener('mousedown', handleMouseDown);
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, []);
+      if (sheetHeight > 75) {
+        sheetContent.style.height = "100vh";
+      } else {
+        sheetContent.style.height = "50vh";
+      }
+    };
 
-    return (
-        <div className={`bottom-sheet ${open && "show"}`}>
-            <div className="sheet-overlay" onClick={() => setOpen(false)}></div>
-            <div className="content">
-                <div className="header">
-                    <div className="drag-icon" >
-                        <span></span>
-                    </div>
-                </div>
-                <div className="body">
-                    <h2>Bottom Sheet Modal</h2>
-                    {children}
-                </div>
-            </div>
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, startHeight, startY, setOpen]);
+
+  return (
+    <div className={`bottom-sheet ${open && "show"}`}>
+      <div className="sheet-overlay" onClick={() => setOpen(false)}></div>
+      <div className="content" ref={sheetContentRef}>
+        <div className="header">
+          <div className="drag-icon" onMouseDown={(e) => handleMouseDown(e)}>
+            <span></span>
+          </div>
         </div>
-    );
+        <div className="body">
+          <h2>Bottom Sheet Modal</h2>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default BottomSheet;
