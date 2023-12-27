@@ -6,24 +6,24 @@ const BottomSheet = ({ open, setOpen, children }) => {
   const [startHeight, setStartHeight] = useState(0);
   const sheetContentRef = useRef(null);
 
-  const handleMouseDown = (e) => {
+  const handleTouchStart = (e) => {
     setIsDragging(true);
-    setStartY(e.pageY);
+    setStartY(e.touches[0].pageY);
     setStartHeight(parseInt(sheetContentRef.current.style.height) || 0);
   };
 
   useEffect(() => {
     const sheetContent = sheetContentRef.current;
 
-    const handleMouseMove = (e) => {
+    const handleTouchMove = (e) => {
       if (isDragging) {
-        const delta = startY - e.pageY;
+        const delta = startY - e.touches[0].pageY;
         const newHeight = startHeight + (delta / window.innerHeight) * 100;
         sheetContent.style.height = `${newHeight}vh`;
       }
     };
 
-    const handleMouseUp = () => {
+    const handleTouchEnd = () => {
       setIsDragging(false);
       const sheetHeight = parseInt(sheetContent.style.height) || 0;
 
@@ -38,12 +38,12 @@ const BottomSheet = ({ open, setOpen, children }) => {
       }
     };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleTouchEnd);
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [isDragging, startHeight, startY, setOpen]);
 
@@ -52,7 +52,7 @@ const BottomSheet = ({ open, setOpen, children }) => {
       <div className="sheet-overlay" onClick={() => setOpen(false)}></div>
       <div className="content" ref={sheetContentRef}>
         <div className="header">
-          <div className="drag-icon" onMouseDown={(e) => handleMouseDown(e)}>
+          <div className="drag-icon" onTouchStart={(e) => handleTouchStart(e)}>
             <span></span>
           </div>
         </div>
